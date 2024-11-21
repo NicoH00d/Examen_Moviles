@@ -14,34 +14,31 @@ class HistoricalViewModel : ViewModel() {
 
     private val repository = HistoricalRepository(RetrofitClient.apiService)
 
-    // LiveData para los eventos históricos
     private val _events = MutableLiveData<List<HistoricalEvent>>()
     val events: LiveData<List<HistoricalEvent>> get() = _events
 
-    // LiveData para manejar errores
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> get() = _error
+    private var currentPage = 1
+    private val limit = 10 // Número de elementos por página
+    private var isLastPage = false // Indica si ya no hay más datos por cargar
 
-    // LiveData para mostrar el estado de carga
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
+    fun fetchEvents() {
+        if (isLastPage) return // No cargar más si ya estamos en la última página
 
-    // Método para obtener eventos históricos
-    fun fetchEvents(page: Int) {
-        _isLoading.value = true
         viewModelScope.launch {
-            Log.d("ViewModel", "Fetching events for page $page")
-            val result = repository.fetchHistoricalEvents(page)
-            result.onSuccess { events ->
-                Log.d("ViewModel", "Fetched events: $events")
-                _events.value = events
-                _isLoading.value = false
-            }.onFailure { throwable ->
-                Log.e("ViewModel", "Error: ${throwable.message}")
-                _error.value = "Failed to load events."
-                _isLoading.value = false
+            val result = repository.fetchHistoricalEvents(currentPage, limit)
+            result.onSuccess { newEvents ->
+                if (newEvents.isEmpty()) {
+                    isLastPage = true // No hay más datos
+                } else {
+                    val currentList = _events.value ?: emptyList()
+                    _events.value = currentList + newEvents
+                    currentPage++
+                }
+            }.onFailure {
+                // Puedes manejar errores aquí si es necesario
             }
         }
     }
-
 }
+
+
