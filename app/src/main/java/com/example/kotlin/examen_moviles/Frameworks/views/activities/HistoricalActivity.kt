@@ -38,41 +38,18 @@ class HistoricalActivity : AppCompatActivity() {
         // Observe LiveData
         observeViewModel()
 
-        // ScrollListener for pagination
-        setupScrollListener()
+        // Load initial data
+        viewModel.fetchEvents()
 
-        // Initial data load
-        viewModel.fetchEvents() // Load the first page
+        // Load more button
+        binding.loadMoreButton.setOnClickListener {
+            viewModel.fetchEvents() // Cargar la siguiente página
+        }
     }
 
     private fun observeViewModel() {
         viewModel.events.observe(this) { events ->
-            Log.d("Activity", "Updating RecyclerView with ${events.size} items.")
-            adapter.updateData(events) // Update the adapter's data
+            adapter.updateData(events) // Actualiza los datos en el adaptador
         }
-
-        viewModel.isLoading.observe(this) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) RecyclerView.VISIBLE else RecyclerView.GONE
-        }
-    }
-
-    private fun setupScrollListener() {
-        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val visibleItemCount = layoutManager.childCount
-                val totalItemCount = layoutManager.itemCount
-                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-
-                if (!viewModel.isLoading.value!! &&
-                    (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0)
-                ) {
-                    Log.d("Activity", "Fetching next page...")
-                    viewModel.fetchEvents() // Fetch the next page
-                }
-            }
-        })
     }
 }

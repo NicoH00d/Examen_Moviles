@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 class HistoricalAdapter(private var events: List<HistoricalEvent>) :
     RecyclerView.Adapter<HistoricalAdapter.HistoricalViewHolder>() {
 
-    // ViewHolder para vincular los datos a las vistas
     class HistoricalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val title: TextView = itemView.findViewById(R.id.titleText)
         private val description: TextView = itemView.findViewById(R.id.descriptionText)
@@ -38,9 +37,8 @@ class HistoricalAdapter(private var events: List<HistoricalEvent>) :
 
     override fun getItemCount(): Int = events.size
 
-    // Método para actualizar los datos
     fun updateData(newData: List<HistoricalEvent>) {
         this.events = newData
-        notifyDataSetChanged() // Notifica al RecyclerView que los datos han cambiado
+        notifyDataSetChanged()
     }
 }

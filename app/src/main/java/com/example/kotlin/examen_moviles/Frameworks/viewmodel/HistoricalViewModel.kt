@@ -17,33 +17,28 @@ class HistoricalViewModel : ViewModel() {
     private val _events = MutableLiveData<List<HistoricalEvent>>()
     val events: LiveData<List<HistoricalEvent>> get() = _events
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
-
     private var currentPage = 1
     private val limit = 10 // Número de elementos por página
-    private var isLastPage = false // Indica si ya no hay más datos
+    private var isLastPage = false // Indica si ya no hay más datos por cargar
 
     fun fetchEvents() {
-        if (_isLoading.value == true || isLastPage) return
+        if (isLastPage) return // No cargar más si ya estamos en la última página
 
-        _isLoading.value = true
         viewModelScope.launch {
             val result = repository.fetchHistoricalEvents(currentPage, limit)
             result.onSuccess { newEvents ->
                 if (newEvents.isEmpty()) {
-                    isLastPage = true
+                    isLastPage = true // No hay más datos
                 } else {
                     val currentList = _events.value ?: emptyList()
                     _events.value = currentList + newEvents
                     currentPage++
                 }
-                _isLoading.value = false
             }.onFailure {
-                _isLoading.value = false
-                Log.e("ViewModel", "Error fetching events: ${it.message}")
+                // Puedes manejar errores aquí si es necesario
             }
         }
     }
 }
+
 
