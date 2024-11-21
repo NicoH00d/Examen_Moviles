@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId = "com.example.kotlin.examen_moviles"
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -33,6 +33,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -46,4 +49,17 @@ dependencies {
 
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    //ViewModel
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+    //Corrutinas
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
+    //Fragment
+    implementation ("androidx.fragment:fragment-ktx:1.5.0")
+    //Activity
+    implementation ("androidx.activity:activity-ktx:1.5.0")
+    //Data binding
+    implementation ("androidx.databinding:databinding-runtime:7.1.2")
+    // LiveData
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
+
 }

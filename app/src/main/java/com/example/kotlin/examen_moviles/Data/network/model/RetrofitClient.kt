@@ -1,5 +1,6 @@
-package com.example.kotlin.examen_moviles.Data.network
+package com.example.kotlin.examen_moviles.Data.network.model
 
+import com.example.kotlin.examen_moviles.Data.network.ApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
